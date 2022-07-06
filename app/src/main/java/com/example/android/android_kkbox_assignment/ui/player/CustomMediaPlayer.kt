@@ -6,25 +6,24 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.*
 
-class CustomMediaPlayer {
+class CustomMediaPlayer(
+) {
     
     private var mediaPlayer: MediaPlayer = MediaPlayer()
     private var TAG = "CustomMediaPlayer"
-    var isPlayingMusic = false
-    
+    var isPlayingMusic = MutableLiveData(true)
     var isPlayingToEnd = MutableLiveData<Boolean>()
     
     
     private var mediaPlayerJob = Job()
     
-    private val coroutineScope = CoroutineScope(mediaPlayerJob + Dispatchers.IO)
+    private val coroutineScope = CoroutineScope(mediaPlayerJob + Dispatchers.Main)
     
     init {
         mediaPlayer.setOnCompletionListener {
             isPlayingToEnd.value = true
-            Log.d(TAG, "isPlayingToEnd 2${isPlayingToEnd}")
         }
-    
+        
         mediaPlayer.setOnPreparedListener {
             playOrPauseMusic()
         }
@@ -33,27 +32,29 @@ class CustomMediaPlayer {
     
     fun playOrPauseMusic() {
         if (mediaPlayer.isPlaying) {
-            isPlayingMusic = mediaPlayer.isPlaying
-
+            // playing -> pause
+            isPlayingMusic.value = false
             mediaPlayer.pause()
         } else {
-            isPlayingMusic = mediaPlayer.isPlaying
+            // pause -> playing
+            isPlayingMusic.value = true
             mediaPlayer.start()
         }
+        
+    }
 
-    }
-    
-    fun stopMusic() {
-        mediaPlayer.seekTo(0)
-        mediaPlayer.stop()
-        mediaPlayer.prepare()
-    }
+//    fun stopMusic() {
+//        mediaPlayer.seekTo(0)
+//        mediaPlayer.stop()
+//        mediaPlayer.prepare()
+//    }
     
     fun seekToProgress(progress: Int) {
         mediaPlayer.seekTo(progress)
     }
     
-    fun getDuration(): Int{
+    fun getDuration(): Int {
+        Log.d(TAG, "getDuration ${mediaPlayer.duration}")
         return mediaPlayer.duration
     }
     
@@ -61,40 +62,38 @@ class CustomMediaPlayer {
         return mediaPlayer.currentPosition
     }
     
-    fun playForwardOrBackwardEpisode(source: String){
+    fun playForwardOrBackwardEpisode(source: String) {
         mediaPlayer.reset()
         initialMediaPlayer(source)
     }
     
     
-    fun releaseMediaPlayer(){
+    fun releaseMediaPlayer() {
         mediaPlayer.release()
         coroutineScope.cancel()
     }
     
-    fun initialMediaPlayer(source: String){
-
-            mediaPlayer.apply {
-                setAudioAttributes(
-                    AudioAttributes.Builder()
-                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                        .setUsage(AudioAttributes.USAGE_MEDIA)
-                        .build()
-                )
-            }
-            try {
-                mediaPlayer.setDataSource(source)
-                mediaPlayer.prepare()
-                Log.d(TAG, "find sound resource")
-            } catch (e: Exception){
-                Log.d(TAG, "cannot find sound resource exception = ${e.message}")
-            }
+    fun initialMediaPlayer(source: String) {
+        mediaPlayer.apply {
+            setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .build()
+            )
+        }
+        try {
+            mediaPlayer.setDataSource(source)
+            mediaPlayer.prepare()
+            Log.d(TAG, "find sound resource")
+        } catch (e: Exception) {
+            Log.d(TAG, "cannot find sound resource exception = ${e.message}")
+        }
     }
     
-    fun startNextEpisode(){
+    fun startNextEpisode() {
         isPlayingToEnd.value = false
     }
     
-
     
 }

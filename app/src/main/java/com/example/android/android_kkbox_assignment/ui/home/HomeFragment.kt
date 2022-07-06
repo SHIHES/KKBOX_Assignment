@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.android.android_kkbox_assignment.databinding.FragmentHomeBinding
 import com.example.android.android_kkbox_assignment.ext.getVmFactory
+import com.example.android.android_kkbox_assignment.logic.model.LoadApiStatus
+import com.example.android.android_kkbox_assignment.logic.model.Result
 
 class HomeFragment : Fragment() {
     
@@ -55,6 +57,12 @@ class HomeFragment : Fragment() {
                     )
                 )
                 viewModel.onEpisodeNavigated()
+            }
+        }
+        
+        viewModel.status.observe(viewLifecycleOwner) {
+            it?.let {
+            
             }
         }
         

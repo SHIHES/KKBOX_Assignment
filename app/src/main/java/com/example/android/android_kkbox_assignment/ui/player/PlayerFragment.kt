@@ -37,7 +37,8 @@ class PlayerFragment : Fragment() {
         
         playListPosition = arg.adapterPosition
         binding = FragmentPlayerBinding.inflate(inflater, container, false)
-        customMediaPlayer = CustomMediaPlayer()
+        customMediaPlayer = CustomMediaPlayer(
+        )
         
         customMediaPlayer.initialMediaPlayer(arg.channel?.episodes?.get(playListPosition)?.sound?.url.toString())
         setSeekBar()
@@ -47,6 +48,17 @@ class PlayerFragment : Fragment() {
         
         customMediaPlayer.isPlayingToEnd.observe(viewLifecycleOwner){
             continuePlaying(it)
+        }
+        
+        customMediaPlayer.isPlayingMusic.observe(viewLifecycleOwner){
+            when(it){
+                true ->{
+                    binding.fragmentPlayerIconButton.setImageResource(R.drawable.ic_baseline_pause_24)
+                }
+                false ->{
+                    binding.fragmentPlayerIconButton.setImageResource(R.drawable.ic_baseline_play_arrow_24)
+                }
+            }
         }
         
         return binding.root
@@ -84,14 +96,7 @@ class PlayerFragment : Fragment() {
     
     private fun setButton(){
         binding.fragmentPlayerPlayButton.setOnClickListener {
-            
-            if(customMediaPlayer.isPlayingMusic){
                 customMediaPlayer.playOrPauseMusic()
-                binding.fragmentPlayerIconButton.setImageResource(R.drawable.ic_baseline_pause_24)
-            } else{
-                customMediaPlayer.playOrPauseMusic()
-                binding.fragmentPlayerIconButton.setImageResource(R.drawable.ic_baseline_play_arrow_24)
-            }
         }
         
         binding.fragmentPlayerBackward.setOnClickListener {
@@ -138,6 +143,10 @@ class PlayerFragment : Fragment() {
         } else {
             Log.d(TAG, "isPlayingToEnd 3${customMediaPlayer.isPlayingToEnd}")
         }
+    }
+    
+    private fun resetSeekBar(){
+        binding.seekBar.max = customMediaPlayer.getDuration()
     }
     
     private fun asyncProgressBar() {
