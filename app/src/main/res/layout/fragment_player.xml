@@ -93,4 +93,22 @@
         app:layout_constraintTop_toBottomOf="@+id/seekBar"
         app:tint="@color/blue" />
 
+    <TextView
+        android:id="@+id/fragment_player_episodeTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0:00"
+        app:layout_constraintBottom_toTopOf="@+id/seekBar"
+        app:layout_constraintEnd_toEndOf="@+id/seekBar"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:id="@+id/fragment_player_episodePlayingTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0:00"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/seekBar"
+        app:layout_constraintStart_toStartOf="@+id/seekBar" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

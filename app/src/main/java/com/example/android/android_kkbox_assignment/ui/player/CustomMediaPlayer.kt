@@ -6,8 +6,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.*
 
-class CustomMediaPlayer(
-) {
+class CustomMediaPlayer {
     
     private var mediaPlayer: MediaPlayer = MediaPlayer()
     private var TAG = "CustomMediaPlayer"
@@ -20,6 +19,7 @@ class CustomMediaPlayer(
     private val coroutineScope = CoroutineScope(mediaPlayerJob + Dispatchers.Main)
     
     init {
+        
         mediaPlayer.setOnCompletionListener {
             isPlayingToEnd.value = true
         }
@@ -53,13 +53,13 @@ class CustomMediaPlayer(
         mediaPlayer.seekTo(progress)
     }
     
-    fun getDuration(): Int {
+    fun getDuration(): Long {
         Log.d(TAG, "getDuration ${mediaPlayer.duration}")
-        return mediaPlayer.duration
+        return mediaPlayer.duration.toLong()
     }
     
-    fun getCurrentEpisodeProgress(): Int {
-        return mediaPlayer.currentPosition
+    fun getCurrentEpisodeProgress(): Long {
+        return mediaPlayer.currentPosition.toLong()
     }
     
     fun playForwardOrBackwardEpisode(source: String) {

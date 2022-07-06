@@ -65,7 +65,8 @@ class PlayerFragment : Fragment() {
     }
     
     private fun setSeekBar(){
-        binding.seekBar.max = customMediaPlayer.getDuration()
+        binding.seekBar.max = customMediaPlayer.getDuration().toInt()
+        binding.fragmentPlayerEpisodeTime.text = milliSecondsToTimer(customMediaPlayer.getDuration())
     
         binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
             override fun onProgressChanged(p0: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -107,6 +108,7 @@ class PlayerFragment : Fragment() {
                     arg.channel?.episodes?.get(playListPosition)?.sound?.url.toString()
                 )
                 setView()
+                setSeekBar()
             } catch (e: Exception){
                 Toast.makeText(requireContext(),"This is the first episode", Toast.LENGTH_SHORT).show()
             }
@@ -119,6 +121,7 @@ class PlayerFragment : Fragment() {
                     arg.channel?.episodes?.get(playListPosition)?.sound?.url.toString()
                 )
                 setView()
+                setSeekBar()
             } catch (e: Exception) {
                 Toast.makeText(requireContext(),"This is the last episode", Toast.LENGTH_SHORT).show()
             }
@@ -131,10 +134,11 @@ class PlayerFragment : Fragment() {
             try {
                 Log.d(TAG, "isPlayingToEnd 1${customMediaPlayer.isPlayingToEnd}")
                 playListPosition--
-                setView()
                 customMediaPlayer.playForwardOrBackwardEpisode(
                     arg.channel?.episodes?.get(playListPosition)?.sound?.url.toString()
                 )
+                setView()
+                setSeekBar()
                 customMediaPlayer.startNextEpisode()
                 Log.d(TAG, "isPlayingToEnd 2${customMediaPlayer.isPlayingToEnd}")
             } catch (e: Exception) {
@@ -146,16 +150,40 @@ class PlayerFragment : Fragment() {
     }
     
     private fun resetSeekBar(){
-        binding.seekBar.max = customMediaPlayer.getDuration()
+        binding.seekBar.max = customMediaPlayer.getDuration().toInt()
     }
     
     private fun asyncProgressBar() {
         handler = Handler()
         runnable = Runnable {
-            binding.seekBar.progress = customMediaPlayer.getCurrentEpisodeProgress()
-            handler.postDelayed(runnable, 500)
+            binding.seekBar.progress = customMediaPlayer.getCurrentEpisodeProgress().toInt()
+            binding.fragmentPlayerEpisodePlayingTime.text = milliSecondsToTimer(customMediaPlayer.getCurrentEpisodeProgress())
+            handler.postDelayed(runnable, 1000)
         }
         runnable.run()
+    }
+    
+    private fun milliSecondsToTimer(milliSeconds: Long): String {
+        var timerString = ""
+        var secondsString = ""
+        val hours = (milliSeconds / (1000 * 60  * 60) )
+        val minutes = (milliSeconds % (1000 * 60  * 60)) / (1000 * 60)
+        val seconds = (milliSeconds % (1000 * 60  * 60)) % (1000 * 60) / 1000
+        
+        if (hours > 0){
+            timerString = "$hours:"
+        }
+        
+        if (seconds < 10) {
+            secondsString = "0$seconds"
+        } else {
+            secondsString = "$seconds"
+        }
+        timerString = "$timerString$minutes:$secondsString"
+        
+        return timerString
+        
+        
     }
     
     override fun onStart() {
