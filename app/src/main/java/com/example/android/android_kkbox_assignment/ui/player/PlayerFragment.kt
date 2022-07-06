@@ -37,8 +37,8 @@ class PlayerFragment : Fragment() {
         
         binding = FragmentPlayerBinding.inflate(inflater, container, false)
         
-        if (arg.episode?.sound?.url != null){
-            customMediaPlayer = CustomMediaPlayer(arg.episode?.sound?.url.toString())
+        if (arg.channel?.episodes?.get(arg.adapterPosition)?.sound?.url != null){
+            customMediaPlayer = CustomMediaPlayer(arg.channel?.episodes?.get(arg.adapterPosition)?.sound?.url.toString())
         } else {
             Toast.makeText(requireContext(), getString(R.string.error_message), Toast.LENGTH_SHORT).show()
         }
@@ -75,11 +75,11 @@ class PlayerFragment : Fragment() {
     
     private fun setView(){
         Glide.with(requireContext())
-            .load(arg.episode?.image?.url)
+            .load(arg.adapterPosition.let { arg.channel?.episodes?.get(it)?.image?.url })
             .centerCrop()
             .into(binding.FragmentPlayerImage)
         
-        binding.fragmentPlayerTitle.text = arg.episode?.title
+        binding.fragmentPlayerTitle.text = arg.channel?.episodes?.get(arg.adapterPosition)?.title
     }
     
     private fun setButton(){

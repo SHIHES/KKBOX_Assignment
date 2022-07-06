@@ -30,8 +30,8 @@ class EpisodeAdapter(
         }
     }
     
-    class OnClickListener(val clickListener: (episode: Episode) -> Unit){
-        fun onClick(episode: Episode) = clickListener(episode)
+    class OnClickListener(val clickListener: (position: Int) -> Unit){
+        fun onClick(position: Int) = clickListener(position)
     }
     
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemVH {
@@ -42,7 +42,7 @@ class EpisodeAdapter(
         val episode = getItem(position)
         holder.bind(episode = episode)
         holder.itemView.setOnClickListener {
-            onClickListener.onClick(episode = episode)
+            onClickListener.onClick(position = position)
         }
     }
     

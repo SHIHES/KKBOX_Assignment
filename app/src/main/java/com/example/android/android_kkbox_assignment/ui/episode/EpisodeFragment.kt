@@ -33,16 +33,19 @@ class EpisodeFragment : Fragment() {
     
     private fun setView(){
         Glide.with(requireContext())
-            .load(arg.episode?.image?.url)
+            .load(arg.adapterPosition.let { arg.channel?.episodes?.get(it)?.image?.url })
             .centerCrop()
             .into(binding.fragmentEpisodeImage)
-        binding.fragmentEpisodeSummary.text = arg.episode?.summary
-        binding.fragmentEpisodeTitle.text = arg.episode?.title
+        binding.fragmentEpisodeSummary.text = arg.channel?.episodes?.get(arg.adapterPosition)?.summary
+        binding.fragmentEpisodeTitle.text = arg.channel?.episodes?.get(arg.adapterPosition)?.title
     }
     
     private fun setButton(){
         binding.playButtonLayout.setOnClickListener {
-            findNavController().navigate(EpisodeFragmentDirections.actionEpisodeFragmentToPlayerFragment(arg.episode))
+            findNavController().navigate(EpisodeFragmentDirections.actionEpisodeFragmentToPlayerFragment(
+                arg.channel,
+                arg.adapterPosition
+            ))
         }
     }
 }

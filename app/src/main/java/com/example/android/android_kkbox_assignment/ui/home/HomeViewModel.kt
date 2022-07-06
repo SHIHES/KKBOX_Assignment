@@ -32,10 +32,10 @@ class HomeViewModel(private val repository: PodcastDataSource) : ViewModel() {
     val channelData: LiveData<Rss>
         get() = _channelData
     
-    private val _selectedEpisode = MutableLiveData<Episode>()
+    private val _selectedEpisodePosition = MutableLiveData<Int>()
     
-    val selectedEpisode: LiveData<Episode>
-        get() = _selectedEpisode
+    val selectedEpisodePosition: LiveData<Int>
+        get() = _selectedEpisodePosition
     
     init {
         getRSSData(true)
@@ -77,11 +77,11 @@ class HomeViewModel(private val repository: PodcastDataSource) : ViewModel() {
         }
     }
     
-    fun navigateToEpisode(episode: Episode){
-        _selectedEpisode.value = episode
+    fun navigateToEpisode(position: Int){
+        _selectedEpisodePosition.value = position
     }
     
     fun onEpisodeNavigated(){
-        _selectedEpisode.value = null
+        _selectedEpisodePosition.value = null
     }
 }

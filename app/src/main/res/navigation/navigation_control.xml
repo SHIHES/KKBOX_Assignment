@@ -22,16 +22,22 @@
             android:id="@+id/action_episodeFragment_to_playerFragment"
             app:destination="@id/playerFragment" />
         <argument android:name="channel"
-            app:argType="com.example.android.android_kkbox_assignment.logic.model.Episode"
+            app:argType="com.example.android.android_kkbox_assignment.logic.model.Channel"
             app:nullable="true"/>
+        <argument android:name="adapterPosition"
+            app:argType="integer"
+            android:defaultValue="0"/>
     </fragment>
     <fragment
         android:id="@+id/playerFragment"
         android:name="com.example.android.android_kkbox_assignment.ui.player.PlayerFragment"
         android:label="PlayerFragment" >
-        <argument android:name="episode"
-            app:argType="com.example.android.android_kkbox_assignment.logic.model.Episode"
+        <argument android:name="channel"
+            app:argType="com.example.android.android_kkbox_assignment.logic.model.Channel"
             app:nullable="true"/>
+        <argument android:name="adapterPosition"
+            app:argType="integer"
+            android:defaultValue="0"/>
 
     </fragment>
 

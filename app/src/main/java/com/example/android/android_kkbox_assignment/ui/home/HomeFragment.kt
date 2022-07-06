@@ -46,10 +46,13 @@ class HomeFragment : Fragment() {
             }
         }
         
-        viewModel.selectedEpisode.observe(viewLifecycleOwner){
+        viewModel.selectedEpisodePosition.observe(viewLifecycleOwner){
             it?.let {
                 findNavController().navigate(
-                    HomeFragmentDirections.actionHomeFragmentToEpisodeFragment(it)
+                    HomeFragmentDirections.actionHomeFragmentToEpisodeFragment(
+                        channel = viewModel.channelData.value?.channel,
+                        it
+                    )
                 )
                 viewModel.onEpisodeNavigated()
             }
