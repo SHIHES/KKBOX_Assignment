@@ -5,17 +5,27 @@ import android.media.MediaPlayer
 import android.util.Log
 import kotlinx.coroutines.*
 
-class CustomMediaPlayer(
-//    val callBack: () -> Unit,
-    val source: String) {
+class CustomMediaPlayer {
     
     private var mediaPlayer: MediaPlayer = MediaPlayer()
     private var TAG = "CustomMediaPlayer"
     var isPlayingMusic = false
+    var isPlayingToEnd = false
+    
     
     private var mediaPlayerJob = Job()
     
     private val coroutineScope = CoroutineScope(mediaPlayerJob + Dispatchers.IO)
+    
+    init {
+        mediaPlayer.setOnCompletionListener {
+            isPlayingToEnd = true
+        }
+    
+        mediaPlayer.setOnPreparedListener {
+            playOrPauseMusic()
+        }
+    }
     
     
     fun playOrPauseMusic() {
@@ -48,20 +58,18 @@ class CustomMediaPlayer(
         return mediaPlayer.currentPosition
     }
     
-    fun playForwardEpisode(){
-    
+    fun playForwardOrBackwardEpisode(source: String){
+        mediaPlayer.reset()
+        initialMediaPlayer(source)
     }
     
-    fun playBackwardEpisode(){
-    
-    }
     
     fun releaseMediaPlayer(){
         mediaPlayer.release()
         coroutineScope.cancel()
     }
     
-    fun initialMediaPlayer(){
+    fun initialMediaPlayer(source: String){
 
             mediaPlayer.apply {
                 setAudioAttributes(
@@ -78,16 +86,6 @@ class CustomMediaPlayer(
             } catch (e: Exception){
                 Log.d(TAG, "cannot find sound resource exception = ${e.message}")
             }
-        
-        
-
-        mediaPlayer.setOnCompletionListener {
-//            callBack.invoke()
-        }
-    
-        mediaPlayer.setOnPreparedListener {
-            playOrPauseMusic()
-        }
     }
     
 
