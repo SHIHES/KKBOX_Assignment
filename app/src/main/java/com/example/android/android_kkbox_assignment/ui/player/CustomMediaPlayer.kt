@@ -3,6 +3,7 @@ package com.example.android.android_kkbox_assignment.ui.player
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.*
 
 class CustomMediaPlayer {
@@ -10,7 +11,8 @@ class CustomMediaPlayer {
     private var mediaPlayer: MediaPlayer = MediaPlayer()
     private var TAG = "CustomMediaPlayer"
     var isPlayingMusic = false
-    var isPlayingToEnd = false
+    
+    var isPlayingToEnd = MutableLiveData<Boolean>()
     
     
     private var mediaPlayerJob = Job()
@@ -19,7 +21,8 @@ class CustomMediaPlayer {
     
     init {
         mediaPlayer.setOnCompletionListener {
-            isPlayingToEnd = true
+            isPlayingToEnd.value = true
+            Log.d(TAG, "isPlayingToEnd 2${isPlayingToEnd}")
         }
     
         mediaPlayer.setOnPreparedListener {
@@ -86,6 +89,10 @@ class CustomMediaPlayer {
             } catch (e: Exception){
                 Log.d(TAG, "cannot find sound resource exception = ${e.message}")
             }
+    }
+    
+    fun startNextEpisode(){
+        isPlayingToEnd.value = false
     }
     
 

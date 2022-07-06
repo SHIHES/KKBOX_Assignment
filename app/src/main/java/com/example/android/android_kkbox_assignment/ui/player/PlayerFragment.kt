@@ -2,20 +2,17 @@ package com.example.android.android_kkbox_assignment.ui.player
 
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.example.android.android_kkbox_assignment.R
 import com.example.android.android_kkbox_assignment.databinding.FragmentPlayerBinding
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlin.properties.Delegates
 
 class PlayerFragment : Fragment() {
@@ -47,7 +44,10 @@ class PlayerFragment : Fragment() {
         setView()
         setButton()
         asyncProgressBar()
-        continuePlaying()
+        
+        customMediaPlayer.isPlayingToEnd.observe(viewLifecycleOwner){
+            continuePlaying(it)
+        }
         
         return binding.root
     }
@@ -121,19 +121,22 @@ class PlayerFragment : Fragment() {
         }
     }
     
-    private fun continuePlaying(){
-        if (customMediaPlayer.isPlayingToEnd){
+    private fun continuePlaying(state: Boolean) {
+        if (state) {
             try {
+                Log.d(TAG, "isPlayingToEnd 1${customMediaPlayer.isPlayingToEnd}")
                 playListPosition--
+                setView()
                 customMediaPlayer.playForwardOrBackwardEpisode(
                     arg.channel?.episodes?.get(playListPosition)?.sound?.url.toString()
                 )
-                setView()
+                customMediaPlayer.startNextEpisode()
+                Log.d(TAG, "isPlayingToEnd 2${customMediaPlayer.isPlayingToEnd}")
             } catch (e: Exception) {
                 Toast.makeText(requireContext(),"This is the last episode", Toast.LENGTH_SHORT).show()
             }
         } else {
-        
+            Log.d(TAG, "isPlayingToEnd 3${customMediaPlayer.isPlayingToEnd}")
         }
     }
     
@@ -149,7 +152,6 @@ class PlayerFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         customMediaPlayer.initialMediaPlayer(arg.channel?.episodes?.get(playListPosition)?.sound?.url.toString())
-        continuePlaying()
         asyncProgressBar()
     }
     
